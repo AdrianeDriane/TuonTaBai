@@ -1,0 +1,12 @@
+# Vite output
+dist/
+
+# Environment variables
+.env
+
+# Dependencies
+node_modules/
+
+# Local logs and caches
+*.log
+.vite/
