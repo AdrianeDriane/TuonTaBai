@@ -1,1 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Sora:wght@100..800&display=swap');
 @import 'tailwindcss';
+
+/* Theme customization using @theme */
+@theme {
+  /* Colors */
+  --color-primary-light: #00bcff;
+  --color-primary: #00a6f4;
+  --color-primary-dark: #0082c8;
+  --color-custom-black: #030712;
+  --color-custom-gray: #ebecec;
+
+  /* Fonts */
+  --font-manrope: 'Manrope', sans-serif;
+  --font-sora: 'Sora', sans-serif;
+}
+
+/* Example: set default fonts for elements */
+@layer base {
+  html {
+    font-family: var(--font-sora, 'Sora', sans-serif);
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-manrope, 'Manrope', sans-serif);
+  }
+}
+
