@@ -10,16 +10,40 @@ passport.use(
       callbackURL: process.env.GOOGLE_CALLBACK_URL!,
     },
     async (_, __, profile, done) => {
-      const existingUser = await User.findOne({ googleId: profile.id });
+      try {
+        const email = profile.emails?.[0].value;
+        if (!email) return done(null, false);
 
-      if (existingUser) return done(null, existingUser);
+        let user = await User.findOne({ googleId: profile.id });
 
-      const user = await User.create({
-        googleId: profile.id,
-        email: profile.emails?.[0].value,
-        name: profile.displayName,
-      });
-      done(null, user);
+        if (user) {
+          return done(null, user);
+        }
+
+        // Check if email exists but registered manually
+        user = await User.findOne({ email });
+
+        if (user) {
+          // Soft merge Google account into manual account
+          user.googleId = profile.id;
+          user.name = profile.displayName;
+          await user.save();
+          return done(null, user);
+        }
+
+        // If no user with this Google ID or email, then create new/register
+        const newUser = await User.create({
+          googleId: profile.id,
+          email,
+          name: profile.displayName,
+        });
+
+        return done(null, newUser);
+      } catch (error) {
+        console.error("Google Strategy Error:", error);
+        return done(error, false);
+      }
     }
   )
 );
+
