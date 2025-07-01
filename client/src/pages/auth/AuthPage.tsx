@@ -36,7 +36,6 @@ export const AuthPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 space-y-6 p-6">
       <h1 className="text-2xl font-bold">Auth Test</h1>
-<></>
       <input
         type="email"
         placeholder="Email"
