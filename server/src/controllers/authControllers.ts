@@ -9,6 +9,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      if (existingUser.googleId && !existingUser.password) {
+        res.status(400).json({ message: "This email is already used with Google Sign-In. Please use 'Continue with Google'." });
+        return;
+      }
+
       res.status(400).json({ message: "User already exists" });
       return;
     }
