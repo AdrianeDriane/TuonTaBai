@@ -24,7 +24,7 @@ router.get(
 
     const { id, email } = req.user as { id: string; email: string };
     const token = generateToken({ id, email });
-    res.redirect(`http://localhost:5173/login/success?token=${token}`);
+    res.redirect(`${process.env.CLIENT_URL}/login/success?token=${token}`);
   }
 );
 
