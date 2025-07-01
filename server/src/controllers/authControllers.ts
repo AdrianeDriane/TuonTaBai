@@ -27,14 +27,23 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 // Email Login
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
+
   try {
-    const user = await User.findOne({ email }) as (typeof User.prototype & { _id: any, password: string, email: string });
-    if (!user || !user.password) {
+    const user = await User.findOne({ email }) as (typeof User.prototype & { _id: any, password?: string, googleId?: string });
+
+    if (!user) {
       res.status(400).json({ message: "Invalid credentials" });
       return;
     }
 
-    const match = await bcrypt.compare(password, user.password);
+    // Scenario 1: Email exists but was created via Google
+    if (!user.password && user.googleId) {
+      res.status(400).json({ message: "This email is registered using Google. Please use 'Continue with Google'." });
+      return;
+    }
+
+    // Continue normal login
+    const match = await bcrypt.compare(password, user.password!);
     if (!match) {
       res.status(400).json({ message: "Invalid credentials" });
       return;
@@ -46,3 +55,4 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
