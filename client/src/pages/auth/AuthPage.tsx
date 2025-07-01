@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import type { AxiosError } from "axios";
+
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -8,40 +10,52 @@ export const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Google Login Token Handler
+  // Handle Google OAuth callback
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const token = query.get("token");
+    const error = query.get("error");
 
     if (token) {
       localStorage.setItem("token", token);
-      setMessage("Login successful!");
+      setMessage("Login successful via Google!");
       navigate("/dashboard");
+    } else if (error) {
+      setError(decodeURIComponent(error));
     }
   }, [location, navigate]);
 
   const handleRegister = async () => {
+    setMessage("");
+    setError("");
+
     try {
       const res = await axios.post(`${API_BASE}/auth/register`, { email, password });
       localStorage.setItem("token", res.data.token);
       setMessage("Registration successful!");
       navigate("/dashboard");
-    } catch {
-      setMessage("Registration failed.");
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ message?: string }>;
+      setError(error.response?.data?.message || "Registration failed.");
     }
   };
 
   const handleLogin = async () => {
+    setMessage("");
+    setError("");
+
     try {
       const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
       localStorage.setItem("token", res.data.token);
       setMessage("Login successful!");
       navigate("/dashboard");
-    } catch {
-      setMessage("Login failed.");
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ message?: string }>;
+      setError(error.response?.data?.message || "Login failed.");
     }
   };
 
@@ -80,7 +94,8 @@ export const AuthPage = () => {
         </button>
       </div>
 
-      {message && <p className="mt-4 text-black font-medium">{message}</p>}
+      {message && <p className="mt-4 text-green-600 font-medium">{message}</p>}
+      {error && <p className="mt-4 text-red-600 font-medium">{error}</p>}
     </div>
   );
 };
