@@ -1,8 +1,8 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import passport from "passport";
 import { login, register } from "../controllers/authControllers";
-import { generateToken } from "../utils/jwt";
-import { Request, Response } from "express";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -23,10 +23,51 @@ router.get(
     }
 
     const { id, email } = req.user as { id: string; email: string };
-    const token = generateToken({ id, email });
-    res.redirect(`${process.env.CLIENT_URL}/login/success?token=${token}`);
+
+    const accessToken = generateAccessToken({ id, email });
+    const refreshToken = generateRefreshToken({ id, email });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+    });
+
+    res.redirect(`${process.env.CLIENT_URL}/auth?token=${accessToken}`);
   }
 );
 
+// Refresh route
+router.post("/refresh", (req: Request, res: Response) => {
+  const token = req.cookies.refreshToken;
+  if (!token) {
+    res.status(401).json({ message: "No refresh token" });
+    return;
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as { id: string; email: string };
+    const accessToken = generateAccessToken({ id: payload.id, email: payload.email });
+
+    res.json({ accessToken });
+    return;
+  } catch (err) {
+    res.status(403).json({ message: "Invalid refresh token" });
+    return;
+  }
+});
+
+// Logout route
+router.post("/logout", (req: Request, res: Response) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/", 
+  });
+  res.json({ message: "Logged out" });
+});
 
 export default router;
