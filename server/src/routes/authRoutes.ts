@@ -30,7 +30,7 @@ router.get(
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.ENVIRONMENT === "production",
-      sameSite: "lax",
+      sameSite: "none",
       path: "/",
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
     });
@@ -64,7 +64,7 @@ router.post("/logout", (req: Request, res: Response) => {
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: process.env.ENVIRONMENT === "production",
-    sameSite: "lax",
+    sameSite: "none",
     path: "/", 
   });
   res.json({ message: "Logged out" });
