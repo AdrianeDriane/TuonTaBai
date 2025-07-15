@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { AxiosError } from "axios";
-import { useAuth } from "../../hooks/useAuth";
+
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,7 +13,6 @@ export const AuthPage = () => {
   const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
-  const { setAccessToken } = useAuth();
 
   // Handle Google OAuth callback
   useEffect(() => {
@@ -22,25 +21,21 @@ export const AuthPage = () => {
     const error = query.get("error");
 
     if (token) {
-      setAccessToken(token);
+      localStorage.setItem("token", token);
       setMessage("Login successful via Google!");
       navigate("/dashboard");
     } else if (error) {
       setError(decodeURIComponent(error));
     }
-  }, [location, navigate, setAccessToken]);
+  }, [location, navigate]);
 
   const handleRegister = async () => {
     setMessage("");
     setError("");
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/auth/register`, 
-        { email, password },
-        { withCredentials: true }
-      );
-      setAccessToken(res.data.accessToken);
+      const res = await axios.post(`${API_BASE}/auth/register`, { email, password });
+      localStorage.setItem("token", res.data.token);
       setMessage("Registration successful!");
       navigate("/dashboard");
     } catch (err: unknown) {
@@ -54,12 +49,8 @@ export const AuthPage = () => {
     setError("");
 
     try {
-      const res = await axios.post(
-        `${API_BASE}/auth/login`, 
-        { email, password },
-        { withCredentials: true }
-      );
-      setAccessToken(res.data.accessToken);
+      const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+      localStorage.setItem("token", res.data.token);
       setMessage("Login successful!");
       navigate("/dashboard");
     } catch (err: unknown) {
