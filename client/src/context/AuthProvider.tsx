@@ -1,66 +1,32 @@
-import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { setupInterceptors } from "../utils/axiosInstance";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  // Ref so interceptors always have access to the latest token
-  const tokenRef = useRef<string | null>(null);
+  const [token, setToken] = useState<string | null>(() => {
+    return localStorage.getItem("token");
+  });
 
   useEffect(() => {
-    tokenRef.current = accessToken;
-  }, [accessToken]);
-
-  const refreshAccessToken = async () => {
-    try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
-        {},
-        { withCredentials: true }
-      );
-      setAccessToken(res.data.accessToken);
-      return res.data.accessToken;
-    } catch (err) {
-      console.error("Failed to refresh token", err);
-      setAccessToken(null);
-      throw err;
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
     }
-  };
+  }, [token]);
 
-  // interceptors single setup
   useEffect(() => {
-    setupInterceptors(
-      () => tokenRef.current,   // always get the latest token
-      refreshAccessToken
-    );
-  }, []);
-
-  // tries to refresh token on app initialization
-  useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        await refreshAccessToken();
-      } catch (err) {
-        // No valid refresh token, user needs to login
-        console.log(err + ": No valid refresh token found");
-      } finally {
-        setIsInitialized(true);
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token") {
+        setToken(e.newValue);
       }
     };
 
-    initializeAuth();
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // don't render children until we've tried to initialize auth
-  if (!isInitialized) {
-    return <div>Loading...</div>; // TODO: replace with a proper loading spinner
-  }
-
   return (
-    <AuthContext.Provider value={{ accessToken, setAccessToken, refreshAccessToken }}>
+    <AuthContext.Provider value={{ token, setToken }}>
       {children}
     </AuthContext.Provider>
   );
