@@ -17,10 +17,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL, // Frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type", "Authorization", "x-device-fingerprint"], // Allowed headers
-    credentials: true, // Allow sending cookies or authentication headers
+    origin: process.env.CLIENT_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"], 
+    allowedHeaders: ["Content-Type", "Authorization", "x-device-fingerprint"], 
+    credentials: true, 
   })
 );
 app.use(helmet());
