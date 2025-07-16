@@ -256,11 +256,15 @@ export function SignupPage() {
       </div>
 
       {/* Right Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-custom-black text-white p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-custom-black text-white p-12 flex-col relative overflow-hidden
+        justify-between xl:justify-center xl:space-y-20">
+        
+        {/* Decorative Background Elements */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-bl from-primary/20 to-transparent"></div>
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-primary/20 rounded-full"></div>
         <div className="absolute bottom-20 -right-20 w-60 h-60 bg-primary/10 rounded-full"></div>
-        
+
+        {/* Branding Heading Section */}
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-8">
             <BookOpen className="h-10 w-10 text-white" />
@@ -274,6 +278,7 @@ export function SignupPage() {
           </p>
         </div>
 
+        {/* Features Section */}
         <div className="relative z-10 space-y-6">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
             <div className="flex items-center gap-3 mb-4">

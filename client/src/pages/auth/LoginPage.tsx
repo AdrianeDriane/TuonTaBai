@@ -49,11 +49,15 @@ export function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-light/10 via-white to-primary-light/20 flex">
       {/* Left Side - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-custom-black text-white p-12 flex-col justify-between relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-custom-black text-white p-12 flex-col relative overflow-hidden
+        justify-between xl:justify-center xl:space-y-20">
+        
+        {/* Background decorations */}
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 to-transparent"></div>
         <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full"></div>
         <div className="absolute bottom-20 -left-20 w-60 h-60 bg-primary/10 rounded-full"></div>
-        
+
+        {/* Branding & Welcome Section */}
         <div className="relative z-10">
           <div className="flex items-center space-x-3 mb-8">
             <BookOpen className="h-10 w-10 text-white" />
@@ -67,6 +71,7 @@ export function LoginPage() {
           </p>
         </div>
 
+        {/* Active Users Card */}
         <div className="relative z-10">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
             <div className="flex items-center gap-3 mb-3">
