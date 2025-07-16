@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { AxiosError } from "axios";
 import { getFingerprint } from "../../utils/getFingerprint";
-
+import { useAuth } from "../../hooks/useAuth"; // Add this import
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
@@ -14,6 +14,7 @@ export const AuthPage = () => {
   const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
+  const { setToken } = useAuth();
 
   // Handle Google OAuth callback
   useEffect(() => {
@@ -22,9 +23,9 @@ export const AuthPage = () => {
     const error = query.get("error");
 
     if (token) {
-      localStorage.setItem("token", token);
+      setToken(token);
       setMessage("Login successful via Google!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } else if (error) {
       if (error === "fingerprint_error") {
         setError("Authentication failed. Please try again.");
@@ -32,15 +33,16 @@ export const AuthPage = () => {
         setError(decodeURIComponent(error));
       }
     }
-  }, [location, navigate]);
+  }, [location, navigate, setToken]); 
 
   const handleRegister = async () => {
     try {
       const fingerprint = await getFingerprint();
       const res = await axios.post(`${API_BASE}/auth/register`, { email, password, fingerprint });
-      localStorage.setItem("token", res.data.token);
+      
+      setToken(res.data.token);
       setMessage("Registration successful!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err: unknown) {
       const error = err as AxiosError<{ message?: string }>;
       setError(error.response?.data?.message || "Registration failed.");
@@ -51,9 +53,10 @@ export const AuthPage = () => {
     try {
       const fingerprint = await getFingerprint();
       const res = await axios.post(`${API_BASE}/auth/login`, { email, password, fingerprint });
-      localStorage.setItem("token", res.data.token);
+      
+      setToken(res.data.token);
       setMessage("Login successful!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err: unknown) {
       const error = err as AxiosError<{ message?: string }>;
       setError(error.response?.data?.message || "Login failed.");
@@ -61,8 +64,13 @@ export const AuthPage = () => {
   };
 
   const handleGoogleLogin = async () => {
-    const fingerprint = await getFingerprint();
-    window.location.href = `${API_BASE}/auth/google?fp=${fingerprint}`;
+    try {
+      const fingerprint = await getFingerprint();
+      window.location.href = `${API_BASE}/auth/google?fp=${fingerprint}`;
+    } catch (err) {
+      console.error("Error getting fingerprint:", err);
+      setError("Failed to initialize Google login");
+    }
   };
 
   return (
