@@ -8,16 +8,35 @@ passport.use(
       clientID: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
       callbackURL: process.env.GOOGLE_CALLBACK_URL!,
+      passReqToCallback: true, // allows access to req in the callback
     },
-    async (_, __, profile, done) => {
+    async (req, _, __, profile, done) => {
       try {
+        let fingerprint;
+        const state = req.query.state as string;
+        
+        if (state) {
+          try {
+            const stateData = JSON.parse(Buffer.from(state, 'base64').toString());
+            fingerprint = stateData.fingerprint;
+          } catch (error) {
+            console.error("Error parsing state parameter:", error);
+            return done(new Error("Invalid state parameter"), false);
+          }
+        }
+
+        if (!fingerprint) {
+          return done(new Error("Missing fingerprint in state"), false);
+        }
+
         const email = profile.emails?.[0].value;
         if (!email) return done(null, false);
 
         let user = await User.findOne({ googleId: profile.id });
 
         if (user) {
-          return done(null, user);
+          // Return existing user with fingerprint attached
+          return done(null, { ...user.toObject(), fingerprint });
         }
 
         // Check if email exists but registered manually
@@ -28,7 +47,7 @@ passport.use(
           user.googleId = profile.id;
           user.name = profile.displayName;
           await user.save();
-          return done(null, user);
+          return done(null, { ...user.toObject(), fingerprint });
         }
 
         // If no user with this Google ID or email, then create new/register
@@ -38,7 +57,7 @@ passport.use(
           name: profile.displayName,
         });
 
-        return done(null, newUser);
+        return done(null, { ...newUser.toObject(), fingerprint });
       } catch (error) {
         console.error("Google Strategy Error:", error);
         return done(error, false);
@@ -46,4 +65,3 @@ passport.use(
     }
   )
 );
-

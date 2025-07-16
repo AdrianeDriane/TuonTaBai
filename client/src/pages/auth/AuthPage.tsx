@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import type { AxiosError } from "axios";
+import { getFingerprint } from "../../utils/getFingerprint";
 
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -25,16 +26,18 @@ export const AuthPage = () => {
       setMessage("Login successful via Google!");
       navigate("/dashboard");
     } else if (error) {
-      setError(decodeURIComponent(error));
+      if (error === "fingerprint_error") {
+        setError("Authentication failed. Please try again.");
+      } else {
+        setError(decodeURIComponent(error));
+      }
     }
   }, [location, navigate]);
 
   const handleRegister = async () => {
-    setMessage("");
-    setError("");
-
     try {
-      const res = await axios.post(`${API_BASE}/auth/register`, { email, password });
+      const fingerprint = await getFingerprint();
+      const res = await axios.post(`${API_BASE}/auth/register`, { email, password, fingerprint });
       localStorage.setItem("token", res.data.token);
       setMessage("Registration successful!");
       navigate("/dashboard");
@@ -45,11 +48,9 @@ export const AuthPage = () => {
   };
 
   const handleLogin = async () => {
-    setMessage("");
-    setError("");
-
     try {
-      const res = await axios.post(`${API_BASE}/auth/login`, { email, password });
+      const fingerprint = await getFingerprint();
+      const res = await axios.post(`${API_BASE}/auth/login`, { email, password, fingerprint });
       localStorage.setItem("token", res.data.token);
       setMessage("Login successful!");
       navigate("/dashboard");
@@ -59,8 +60,9 @@ export const AuthPage = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    window.location.href = `${API_BASE}/auth/google`;
+  const handleGoogleLogin = async () => {
+    const fingerprint = await getFingerprint();
+    window.location.href = `${API_BASE}/auth/google?fp=${fingerprint}`;
   };
 
   return (

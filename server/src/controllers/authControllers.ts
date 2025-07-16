@@ -5,7 +5,7 @@ import { generateToken } from "../utils/jwt";
   
 // Email Registration
 export const register = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+  const { email, password, fingerprint } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -22,7 +22,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const newUser = new User({ email, password: hashed });
     await newUser.save();
 
-    const token = generateToken({ id: (newUser._id as string).toString(), email: newUser.email });
+    const token = generateToken({ id: (newUser._id as string).toString(), email: newUser.email, fingerprint });
     res.status(201).json({ token });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
@@ -31,7 +31,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
 // Email Login
 export const login = async (req: Request, res: Response): Promise<void> => {
-  const { email, password } = req.body;
+  const { email, password, fingerprint } = req.body;
 
   try {
     const user = await User.findOne({ email }) as (typeof User.prototype & { _id: any, password?: string, googleId?: string });
@@ -54,7 +54,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = generateToken({ id: user._id.toString(), email: user.email });
+    const token = generateToken({ id: user._id.toString(), email: user.email, fingerprint });
     res.status(200).json({ token });
   } catch (err) {
     res.status(500).json({ message: "Server error" });

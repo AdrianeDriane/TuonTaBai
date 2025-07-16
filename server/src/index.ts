@@ -19,7 +19,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL, // Frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    allowedHeaders: ["Content-Type", "Authorization", "x-device-fingerprint"], // Allowed headers
     credentials: true, // Allow sending cookies or authentication headers
   })
 );
