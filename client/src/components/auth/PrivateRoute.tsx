@@ -28,7 +28,7 @@ export const PrivateRoute = ({ children }: PrivateRouteProps) => {
   if (isLoading) return <div>Loading...</div>;
 
   if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
