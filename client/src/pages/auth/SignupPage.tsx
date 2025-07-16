@@ -117,7 +117,7 @@ export function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-11 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-11 text-gray-400 hover:text-gray-600 hover:cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -157,27 +157,27 @@ export function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-11 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-11 text-gray-400 hover:text-gray-600 hover:cursor-pointer"
                 >
                   {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
 
               <div className="space-y-2">
-                <label className="flex items-start">
+                <label className="flex items-start hover:cursor-pointer">
                   <input
                     type="checkbox"
                     checked={agreeTerms}
                     onChange={(e) => setAgreeTerms(e.target.checked)}
-                    className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1"
+                    className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary mt-1 hover:cursor-pointer"
                   />
                   <span className="ml-2 text-sm text-gray-600 font-sora">
                     I agree to the{' '}
-                    <a href="#" className="text-primary hover:text-primary/80">
+                    <a href="#" className="text-primary hover:cursor-pointer hover:text-primary/80">
                       Terms of Service
                     </a>{' '}
                     and{' '}
-                    <a href="#" className="text-primary hover:text-primary/80">
+                    <a href="#" className="text-primary hover:cursor-pointer hover:text-primary/80">
                       Privacy Policy
                     </a>
                   </span>
@@ -244,7 +244,7 @@ export function SignupPage() {
                   <button
                     type="button"
                     onClick={goToLogin}
-                    className="text-primary hover:text-primary/80 font-medium"
+                    className="text-primary hover:text-primary/80 font-medium hover:cursor-pointer"
                   >
                     Sign in
                   </button>

@@ -139,17 +139,17 @@ export function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-11 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-11 text-gray-400 hover:text-gray-600 hover:cursor-pointer"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center">
+                <label className="flex items-center hover:cursor-pointer">
                   <input
                     type="checkbox"
-                    className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
+                    className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary hover:cursor-pointer"
                   />
                   <span className="ml-2 text-sm text-gray-600 font-sora">
                     Remember me
@@ -217,7 +217,7 @@ export function LoginPage() {
                   <button
                     type="button"
                     onClick={goToSignup}
-                    className="text-primary hover:text-primary/80 font-medium"
+                    className="text-primary hover:text-primary/80 font-medium hover:cursor-pointer"
                   >
                     Sign up
                   </button>
