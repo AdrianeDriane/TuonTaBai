@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Menu, X, BookOpen, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom';
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   return (
@@ -31,13 +32,19 @@ export function Header() {
           >
             Pricing
           </a>
-          <button className="cursor-pointer px-6 py-1 text-custom-black border border-custom-gray rounded-full hover:bg-custom-gray/5 transition-all">
+          <Link
+            to="/login"
+            className="cursor-pointer px-6 py-1 text-custom-black border border-custom-gray rounded-full hover:bg-custom-gray/5 transition-all"
+          >
             Login
-          </button>
-          <button className="cursor-pointer group px-6 py-2 bg-custom-black text-white rounded-full hover:bg-custom-black/90 transition-all inline-flex items-center">
+          </Link>
+          <Link
+            to="/signup"
+            className="cursor-pointer group px-6 py-2 bg-custom-black text-white rounded-full hover:bg-custom-black/90 transition-all inline-flex items-center"
+          >
             Sign Up
             <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
-          </button>
+          </Link>
         </nav>
         {/* Mobile menu button */}
         <button
@@ -74,13 +81,19 @@ export function Header() {
               Pricing
             </a>
             <div className="flex flex-col space-y-2 pt-2 border-t border-custom-gray">
-              <button className="cursor-pointer px-6 py-3 text-custom-black border border-custom-gray rounded-full hover:bg-custom-gray/5 transition-all">
+              <Link
+                to="/login"
+                className="cursor-pointer px-6 py-3 text-custom-black border border-custom-gray rounded-full hover:bg-custom-gray/5 transition-all inline-flex items-center justify-center"
+              >
                 Login
-              </button>
-              <button className="cursor-pointer group px-6 py-3 bg-custom-black text-white rounded-full hover:bg-custom-black/90 transition-all inline-flex items-center justify-center">
+              </Link>
+              <Link
+                to="/signup"
+                className="cursor-pointer group px-6 py-3 bg-custom-black text-white rounded-full hover:bg-custom-black/90 transition-all inline-flex items-center justify-center"
+              >
                 Sign Up
                 <ArrowRight className="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
-              </button>
+              </Link>
             </div>
           </nav>
         </div>
