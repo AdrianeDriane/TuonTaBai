@@ -4,6 +4,8 @@ import { DashboardPage } from "./pages/dashboard/DashboardPage";
 import { PrivateRoute } from "./components/auth/PrivateRoute";
 import { LoginPage } from "./pages/auth/LoginPage";
 import { SignupPage } from "./pages/auth/SignupPage";
+import { VerifyEmailPage } from "./pages/auth/VerifyEmailPage";
+import LoginSuccess from "./pages/auth/LoginSuccess";
 
 function App() {
   return (
@@ -19,7 +21,8 @@ function App() {
             </PrivateRoute>
           }
         />
-      <Route path="/login/success" element={<LoginPage />} />
+      <Route path="/login/success" element={<LoginSuccess />} />
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
     </Routes>
   )
 }

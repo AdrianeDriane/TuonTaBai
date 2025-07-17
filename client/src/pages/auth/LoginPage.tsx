@@ -1,19 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, BookOpen, Eye, EyeOff } from 'lucide-react';
 import { Button } from '../../components/common/Button';
 import { Input } from '../../components/common/Input';
 import { Card } from '../../components/common/Card';
 import { useAuthActions } from '../../hooks/useAuthActions';
-import { useAuth } from '../../hooks/useAuth';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const location = useLocation();
   const navigate = useNavigate();
-  const { setToken } = useAuth();
   
   const {
     handleLogin,
@@ -22,20 +19,6 @@ export function LoginPage() {
     error,
     message,
   } = useAuthActions();
-
-  // Handle Google OAuth callback
-  useEffect(() => {
-    const query = new URLSearchParams(location.search);
-    const token = query.get('token');
-    const error = query.get('error');
-
-    if (token) {
-      setToken(token);
-      navigate('/dashboard', { replace: true });
-    } else if (error) {
-      // Handle error from OAuth
-    }
-  }, [location, navigate, setToken]);
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();

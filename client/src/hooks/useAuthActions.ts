@@ -29,7 +29,11 @@ export function useAuthActions() {
       
       setToken(res.data.token);
       setMessage('Registration successful!');
-      navigate('/dashboard', { replace: true });
+      
+      navigate('/verify-email', { 
+        state: { email },
+        replace: true 
+      });
     } catch (err: unknown) {
       const error = err as AxiosError<{ message?: string }>;
       setError(error.response?.data?.message || 'Registration failed.');
@@ -57,6 +61,10 @@ export function useAuthActions() {
     } catch (err: unknown) {
       const error = err as AxiosError<{ message?: string }>;
       setError(error.response?.data?.message || 'Login failed.');
+      if(error.response?.status === 403){
+        navigate('/verify-email', {state: {email} });
+      }
+
     } finally {
       setIsLoading(false);
     }
