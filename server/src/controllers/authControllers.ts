@@ -19,7 +19,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     }
 
     const hashed = await bcrypt.hash(password, 12);
-    const newUser = new User({ email, password: hashed });
+    const newUser = new User({ email, password: hashed, verified: false });
     await newUser.save();
 
     const token = generateToken({ id: (newUser._id as string).toString(), email: newUser.email, fingerprint });
@@ -51,6 +51,11 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const match = await bcrypt.compare(password, user.password!);
     if (!match) {
       res.status(400).json({ message: "Invalid credentials" });
+      return;
+    }
+
+    if (!user.verified) {
+      res.status(403).json({ message: 'Please verify your email before logging in.' });
       return;
     }
 

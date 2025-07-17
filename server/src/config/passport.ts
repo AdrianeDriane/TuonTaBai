@@ -46,6 +46,7 @@ passport.use(
           // Soft merge Google account into manual account
           user.googleId = profile.id;
           user.name = profile.displayName;
+          user.verified = true;
           await user.save();
           return done(null, { ...user.toObject(), fingerprint });
         }
@@ -55,6 +56,7 @@ passport.use(
           googleId: profile.id,
           email,
           name: profile.displayName,
+          verified: true,
         });
 
         return done(null, { ...newUser.toObject(), fingerprint });

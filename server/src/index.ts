@@ -10,8 +10,8 @@ import session from "express-session";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes";
+import verificationRoutes from "./routes/verificationRoutes";
 import "./config/passport";
-
 
 const app = express();
 app.use(express.json());
@@ -39,6 +39,7 @@ app.use(passport.session());
 
 app.use("/api", apiRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/verification", verificationRoutes);
 
 const PORT = process.env.PORT || 5000;
 connectDB()
