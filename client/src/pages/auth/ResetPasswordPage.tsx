@@ -12,22 +12,24 @@ export function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [token1, setToken] = useState('');
   const [isValidToken, setIsValidToken] = useState(true);
   const navigate = useNavigate();
-  const { token } = useParams();
+  const { tokenFromParams } = useParams();
 
+  // To avoid @typescript-eslint/no-unused-vars
+  //TODO: remove later
+  console.log(token1);
   useEffect(() => {
-    if (!token) {
+    if (!tokenFromParams) {
       setIsValidToken(false);
       setError('Invalid or missing reset token. Please request a new password reset.');
     } else {
-      setToken(token);
+      setToken(tokenFromParams);
       // TODO: Validate token with backend
       // validateResetToken(resetToken);
     }
-  }, [token]);
+  }, [tokenFromParams]);
 
   const validatePassword = (pwd: string) => {
     const minLength = pwd.length >= 8;
